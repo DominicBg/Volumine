@@ -6,7 +6,7 @@ Volumine - Tool to generate Volumetric Textures with noise
 # Missing 
 - GPU support for realtime
 - 3D viewer in the tool
-
+- Looping Noise
 
 ![](Medias/volumine1.gif)
 ![](Medias/volumine2.gif)

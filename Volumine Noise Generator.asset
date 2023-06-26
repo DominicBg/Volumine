@@ -17,7 +17,7 @@ MonoBehaviour:
     y: 64
     z: 64
   noises:
-  - amplitude: 1.08
+  - amplitude: 2
     scale: 4.54
     offset:
       x: 0
@@ -26,14 +26,14 @@ MonoBehaviour:
     type: 0
     isInverted: 1
     fbmCount: 2
-  - amplitude: -1.06
-    scale: 1.59
+  - amplitude: -1
+    scale: 1.28
     offset:
       x: 0
       y: 0
       z: 0
     type: 1
-    isInverted: 0
+    isInverted: 1
     fbmCount: 0
   - amplitude: 0.47
     scale: 2.47
