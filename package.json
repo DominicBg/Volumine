@@ -1,0 +1,22 @@
+{
+  "name": "com.dominionxvii.volumine",
+  "displayName": "Volumine",
+  "version": "0.1.0",
+  "keywords": [
+    "Raytracing",
+    "Low Poly",
+    "Low Rez"
+  ],
+  "category": "3D",
+  "description": "Provides a tool to visualize,create, export Volumetric Noise in the form of 2D or 3D Textures.",
+  "dependencies": {
+    "com.unity.mathematics": "1.2.6",
+    "com.unity.burst": "1.6.6"
+  },
+  "author": {
+    "name": "Dominic Brodeur-Gendron",
+    "email": "dominic.b.gendron@gmail.com",
+    "url": "https://github.com/DominicBg/"
+  },
+  "type": "library"
+}
