@@ -1,4 +1,4 @@
-Shader "Volumine/VolumetricTextureVisualiser"
+Shader "Volumine/Volumine3DVisualiser"
 {
 	Properties
 	{
@@ -41,6 +41,7 @@ Shader "Volumine/VolumetricTextureVisualiser"
 			float alpha;
 			float3 camPos;
 			float4 camRot;
+			bool viewPeriodic;
 
 			float3 qmul(float4 q, float3 v)
 			{
@@ -80,6 +81,10 @@ Shader "Volumine/VolumetricTextureVisualiser"
 				return lerp(toMin, toMax, saturate(t));
 			}
 
+#define STEPSIZE 0.005
+#define MAXLENGTH 1.732 //sqrt(x^2 + y^2 + z^3) => sqrt(3) 
+
+
 			fixed4 frag(v2f i) : SV_Target
 			{
 				float3 ro, rd;
@@ -92,24 +97,26 @@ Shader "Volumine/VolumetricTextureVisualiser"
 				{
 					float4 sum = 0;
 					float3 pos = ro + rd * dist;
-					float stepSize = 0.005;
 
-					//cube max length = sqrt(x^2 + y^2 + z^3)
-					int maxLength = sqrt(3);
-					int maxStep = maxLength / stepSize;
+					int maxStep = MAXLENGTH / STEPSIZE;
 
+					[unroll(maxStep)]
 					for (int i = 0; i < maxStep; i++)
 					{
-						pos += rd * stepSize;
+						pos += rd * STEPSIZE;
 
 						bool posInBox = all(pos <= scale) && all(pos >= -scale);
 						if (!posInBox)
 							continue;
 
 						float3 uv3 = Remap(-0.5, 0.5, 0, 1, pos);
+						if (viewPeriodic)
+						{
+							uv3 += .5;
+						}
 
 						float4 col = tex3D(_VolumeTexture, uv3);
-						sum += col * stepSize * alpha;
+						sum += col * STEPSIZE * alpha;
 					}
 
 					return sum;

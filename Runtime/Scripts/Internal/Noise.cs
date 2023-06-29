@@ -3,7 +3,7 @@ using Unity.Mathematics;
 
 namespace Volumine
 {
-    public enum NoiseType { Worley, CNoise, SNoise, Random }
+    public enum NoiseType { Worley, WorleyPeriodic, ClassicNoise, SimplexNoise, PeriodicNoise, Random }
 
     [System.Serializable]
     public struct Noise
@@ -14,7 +14,7 @@ namespace Volumine
         public NoiseType type;
         public bool isInverted;
 
-        [Min(0)]
+        [Range(0, 5)]
         public int fbmCount;
 
         public float CalculateValue(float3 pos)
@@ -26,7 +26,7 @@ namespace Volumine
             //Account for when the value is 0
             for (int i = 0; i <= fbmCount; i++)
             {
-                float noiseValue = CalculateNoise(pos * scale * freq + offset);
+                float noiseValue = CalculateNoise(pos + offset, scale * freq);
                 //normalize [-1, 1] to [0, 1]
                 noiseValue = noiseValue * 0.5f + 0.5f;
                 if (isInverted)
@@ -39,19 +39,24 @@ namespace Volumine
             return sum;
         }
 
-        float CalculateNoise(float3 pos)
+        float CalculateNoise(float3 pos, float scale)
         {
             switch (type)
             {
                 case NoiseType.Worley:
-                    return noise.cellular(pos).x;
-                case NoiseType.CNoise:
-                    return noise.cnoise(pos);
-                case NoiseType.SNoise:
-                    return noise.snoise(pos);
+                    return noise.cellular(pos * scale).x;
+                case NoiseType.ClassicNoise:
+                    return noise.cnoise(pos * scale);
+                case NoiseType.SimplexNoise:
+                    return noise.snoise(pos * scale);
                 case NoiseType.Random:
-                    return MathUtils.RNG(pos);
+                    return MathUtils.RNG(pos * scale);
+                case NoiseType.WorleyPeriodic:
+                    return MathUtils.PeriodicalCellularNoise(pos, scale);
+                case NoiseType.PeriodicNoise:
+                    return noise.pnoise(pos * scale, scale);
             }
+
             return 0;
         }
     }

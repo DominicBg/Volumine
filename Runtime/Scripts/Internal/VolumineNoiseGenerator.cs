@@ -26,7 +26,7 @@ namespace Volumine
                     amplitude = -.25f,
                     isInverted = true,
                     scale = 3,
-                    type = NoiseType.CNoise
+                    type = NoiseType.ClassicNoise
                 },
 
             };

@@ -17,33 +17,24 @@ MonoBehaviour:
     y: 64
     z: 64
   noises:
-  - amplitude: 2
-    scale: 4.54
+  - amplitude: 1.25
+    scale: 4
     offset:
-      x: 0
-      y: 0
-      z: 0
-    type: 0
-    isInverted: 1
-    fbmCount: 2
-  - amplitude: -1
-    scale: 1.28
-    offset:
-      x: 0
+      x: 6.51
       y: 0
       z: 0
     type: 1
     isInverted: 1
-    fbmCount: 0
-  - amplitude: 0.47
-    scale: 2.47
+    fbmCount: 3
+  - amplitude: -0.25
+    scale: 2
     offset:
       x: 0
       y: 0
       z: 0
-    type: 2
-    isInverted: 0
-    fbmCount: 2
+    type: 4
+    isInverted: 1
+    fbmCount: 0
   OnValidateCallback:
     m_PersistentCalls:
       m_Calls: []

@@ -8,15 +8,18 @@ namespace Volumine
     [CustomEditor(typeof(VolumineNoiseGenerator))]
     public class VolumineNoiseGeneratorWindow : Editor
     {
-        const string shaderName = "Volumine/VolumetricTextureVisualiser";
+        const string shader3DName = "Volumine/Volumine3DVisualiser";
+        const string shader2DName = "Volumine/Volumine2DVisualiser";
         public string textureName = "Cloud";
         public string path = "Assets/Art/Generated/";
         public float rotationYSlider = 45f;
         public float rotationXSlider = 45f;
         public float zoomSlider = 4f;
+        public bool viewPeriodic;
 
         public float alphaSlider = 0.5f;
-        private Material renderMaterial;
+        private Material renderMaterial3D;
+        private Material renderMaterial2D;
         private int maxSize3D = 32;
 
         Texture2D preview2D;
@@ -24,7 +27,9 @@ namespace Volumine
 
         private void OnEnable()
         {
-            renderMaterial = new Material(Shader.Find(shaderName));
+            renderMaterial3D = new Material(Shader.Find(shader3DName));
+            renderMaterial2D = new Material(Shader.Find(shader2DName));
+
             var data = (VolumineNoiseGenerator)target;
             data.OnValidateCallback.AddListener(RecalculatePreview);
 
@@ -68,16 +73,18 @@ namespace Volumine
             }
 
             ShowSliders();
-
+            viewPeriodic = EditorGUILayout.Toggle("View Periodic", viewPeriodic);
             SetTransformInShader();
 
-            renderMaterial.SetTexture("_VolumeTexture", preview3D);
-            renderMaterial.SetFloat("alpha", alphaSlider);
+            renderMaterial3D.SetTexture("_VolumeTexture", preview3D);
+            renderMaterial3D.SetFloat("alpha", alphaSlider);
+            renderMaterial3D.SetInt(nameof(viewPeriodic), viewPeriodic ? 1 : 0);
+            renderMaterial2D.SetInt(nameof(viewPeriodic), viewPeriodic ? 1 : 0);
 
             const int textureSize = 256;
             var controlRect = EditorGUILayout.GetControlRect();
-            EditorGUI.DrawPreviewTexture(new Rect(controlRect.x, controlRect.y, textureSize, textureSize), preview2D);
-            EditorGUI.DrawPreviewTexture(new Rect(controlRect.x + textureSize * 1.5f, controlRect.y, textureSize, textureSize), Texture2D.whiteTexture, renderMaterial, ScaleMode.ScaleToFit);
+            EditorGUI.DrawPreviewTexture(new Rect(controlRect.x, controlRect.y, textureSize, textureSize), preview2D, renderMaterial2D, ScaleMode.ScaleToFit);
+            EditorGUI.DrawPreviewTexture(new Rect(controlRect.x + textureSize * 1.5f, controlRect.y, textureSize, textureSize), Texture2D.whiteTexture, renderMaterial3D, ScaleMode.ScaleToFit);
         }
 
         private void ShowSliders()
@@ -98,8 +105,8 @@ namespace Volumine
             float3 cameraForward = math.normalize(boxPos - camPos);
             quaternion camRot = quaternion.LookRotation(cameraForward, math.up());
 
-            renderMaterial.SetVector(nameof(camPos), new float4(camPos, 0));
-            renderMaterial.SetVector(nameof(camRot), camRot.value);
+            renderMaterial3D.SetVector(nameof(camPos), new float4(camPos, 0));
+            renderMaterial3D.SetVector(nameof(camRot), camRot.value);
         }
 
         void SaveTextureAsPNG(Texture2D texture)
